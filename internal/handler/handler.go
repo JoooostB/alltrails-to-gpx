@@ -63,6 +63,8 @@ func (h *Handler) RegisterRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("POST /convert-raw", h.convertRaw)
 	mux.HandleFunc("GET /gpx/{token}", h.download)
 	mux.HandleFunc("GET /health", h.health)
+	mux.HandleFunc("GET /robots.txt", h.robotsTxt)
+	mux.HandleFunc("GET /sitemap.xml", h.sitemapXML)
 }
 
 // --- handlers ---
@@ -193,6 +195,23 @@ func (h *Handler) download(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) health(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "text/plain")
 	_, _ = w.Write([]byte("ok"))
+}
+
+func (h *Handler) robotsTxt(w http.ResponseWriter, _ *http.Request) {
+	w.Header().Set("Content-Type", "text/plain")
+	_, _ = w.Write([]byte("User-agent: *\nAllow: /\nDisallow: /gpx/\nDisallow: /convert\nDisallow: /convert-raw\n\nSitemap: https://alltrailstogpx.io/sitemap.xml\n"))
+}
+
+func (h *Handler) sitemapXML(w http.ResponseWriter, _ *http.Request) {
+	w.Header().Set("Content-Type", "application/xml")
+	_, _ = w.Write([]byte(`<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://alltrailstogpx.io/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>`))
 }
 
 // --- template helpers ---
