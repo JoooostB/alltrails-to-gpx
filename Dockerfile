@@ -52,6 +52,6 @@ COPY --from=go-builder   /server                           /server
 
 EXPOSE 8080
 
-USER nobody:nogroup
+USER 65534:65534
 
 ENTRYPOINT ["/server"]
