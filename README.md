@@ -7,6 +7,8 @@ import into Garmin Connect, Strava, Komoot, or any other GPX-compatible app.
 GPX conversion is powered by [alltrailsgpx](https://github.com/cdown/alltrailsgpx)
 by [@cdown](https://github.com/cdown).
 
+![Screenshot of the app showing a form to input an AllTrails URL and a button to convert it to GPX](docs/screengrab.png)
+
 ---
 
 ## Quick start
