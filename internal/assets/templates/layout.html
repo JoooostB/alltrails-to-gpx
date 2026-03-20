@@ -1,0 +1,71 @@
+{{define "layout"}}<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AllTrails → GPX</title>
+  <link rel="stylesheet" href="/static/tailwind.min.css">
+  <script src="/static/htmx.min.js" defer></script>
+</head>
+<body class="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
+  <div class="w-full max-w-lg">
+
+    <div class="bg-white rounded-2xl shadow-md p-8 mb-4">
+      <h1 class="text-2xl font-semibold text-gray-800 mb-1">AllTrails → GPX</h1>
+      <p class="text-sm text-gray-500 mb-6">
+        Paste a public AllTrails trail URL to download it as a GPX file — ready
+        to import into Garmin Connect, Strava, Komoot, or any other app that
+        supports the GPX format.
+      </p>
+
+      <form hx-post="/convert"
+            hx-target="#status"
+            hx-swap="innerHTML"
+            hx-indicator="#spinner">
+        <label for="url" class="block text-sm font-medium text-gray-700 mb-1">
+          AllTrails URL
+        </label>
+        <input
+          id="url"
+          name="url"
+          type="url"
+          required
+          pattern="https://www\.alltrails\.com/.*"
+          placeholder="https://www.alltrails.com/trail/..."
+          class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 mb-4"
+        >
+
+        <div class="flex items-center gap-3">
+          <button
+            type="submit"
+            class="bg-green-600 hover:bg-green-700 text-white font-medium text-sm px-5 py-2 rounded-lg transition-colors">
+            Download GPX
+          </button>
+          <span id="spinner" class="htmx-indicator text-sm text-gray-500">
+            ⟳ Fetching route…
+          </span>
+        </div>
+      </form>
+
+      <div id="status" class="mt-5"></div>
+    </div>
+
+    <footer class="text-center text-xs text-gray-400 leading-relaxed px-2">
+      <p>
+        This is an unofficial, open-source tool and is not affiliated with,
+        endorsed by, or in any way connected to AllTrails, Inc. Trail data is
+        fetched from publicly accessible AllTrails pages and remains the
+        property of AllTrails and its contributors, subject to their
+        <a href="https://www.alltrails.com/terms" target="_blank" rel="noopener noreferrer"
+           class="underline hover:text-gray-600">Terms of Service</a>.
+      </p>
+      <p class="mt-1">
+        For personal, non-commercial use only. Use at your own risk.
+        Always verify routes against official sources before heading out.
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>
+{{end}}

@@ -1,0 +1,29 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:base"],
+  "labels": ["dependencies"],
+  "packageRules": [
+    {
+      "description": "Automerge patch and minor updates",
+      "matchUpdateTypes": ["patch", "minor"],
+      "automerge": true
+    },
+    {
+      "description": "Group all Dockerfile base image updates into a single PR",
+      "matchManagers": ["dockerfile"],
+      "matchDepTypes": ["stage"],
+      "groupName": "docker base images"
+    }
+  ],
+  "regexManagers": [
+    {
+      "description": "cargo install version in Dockerfile",
+      "fileMatch": ["^Dockerfile$"],
+      "matchStrings": [
+        "cargo install alltrailsgpx --version (?<currentValue>[\\d.]+)"
+      ],
+      "depNameTemplate": "alltrailsgpx",
+      "datasourceTemplate": "crate"
+    }
+  ]
+}

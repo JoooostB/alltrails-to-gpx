@@ -1,0 +1,28 @@
+# Generated static assets — produced by `make static` or the Docker build.
+# Do not commit; regenerate with `make static`.
+internal/assets/static/tailwind.min.css
+internal/assets/static/htmx.min.js
+
+# Node
+node_modules/
+package-lock.json
+
+# Build output
+bin/
+
+# macOS
+.DS_Store
+
+# Claude Code
+.claude/
+memory/
+
+# Credential and secret files
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+*.cer
+*.crt

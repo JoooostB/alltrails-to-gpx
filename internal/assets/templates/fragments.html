@@ -1,0 +1,54 @@
+{{define "success"}}
+<div class="flex items-start gap-2 text-green-700 bg-green-50 border border-green-200 rounded-lg p-3 text-sm">
+  <span class="mt-0.5">✓</span>
+  <div>
+    <p class="font-medium">Done! Your download has started.</p>
+    <p class="text-green-600 mt-0.5">
+      <a id="dl" href="/gpx/{{.Token}}" download="{{.Slug}}.gpx" class="underline">
+        Click here if it didn't start automatically.
+      </a>
+    </p>
+  </div>
+</div>
+<script>document.getElementById('dl').click();</script>
+{{end}}
+
+{{define "error"}}
+<div class="flex items-start gap-2 text-red-700 bg-red-50 border border-red-200 rounded-lg p-3 text-sm">
+  <span class="mt-0.5">⚠</span>
+  <p>{{.}}</p>
+</div>
+{{end}}
+
+{{define "captcha"}}
+<div class="text-amber-800 bg-amber-50 border border-amber-200 rounded-lg p-4 text-sm space-y-3">
+  <p class="font-medium">AllTrails blocked the automatic fetch (bot detection).</p>
+  <p>Fetch the trail data manually from your browser in 3 steps:</p>
+  <ol class="list-decimal list-inside space-y-1 text-amber-900">
+    <li>Open <a href="{{.}}" target="_blank" rel="noopener noreferrer"
+               class="underline font-medium">this trail page</a> in a new tab.</li>
+    <li>Open DevTools → <strong>Network</strong> tab, then reload the page.
+        Filter by <code class="bg-amber-100 px-1 rounded">v3/trails</code> and click
+        the matching request. Copy the full <strong>Response</strong> JSON.</li>
+    <li>Paste it below and click <strong>Convert</strong>.</li>
+  </ol>
+
+  <form hx-post="/convert-raw"
+        hx-target="#status"
+        hx-swap="innerHTML"
+        hx-indicator="#spinner-raw">
+    <input type="hidden" name="slug"
+           value="{{. | urlSlug}}">
+    <textarea name="trail_json" rows="4" required
+              placeholder='{"trails":[{"id":...}]}'
+              class="w-full mt-2 rounded-lg border border-amber-300 px-3 py-2 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-amber-400 bg-white"></textarea>
+    <div class="flex items-center gap-3 mt-2">
+      <button type="submit"
+              class="bg-amber-600 hover:bg-amber-700 text-white font-medium text-sm px-4 py-1.5 rounded-lg transition-colors">
+        Convert
+      </button>
+      <span id="spinner-raw" class="htmx-indicator text-sm text-amber-700">⟳ Converting…</span>
+    </div>
+  </form>
+</div>
+{{end}}

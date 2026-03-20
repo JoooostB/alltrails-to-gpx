@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: alltrails-to-gpx
+spec:
+  podSelector:
+    matchLabels:
+      app: alltrails-to-gpx
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - ports:
+        - port: 8080
+          protocol: TCP
+  egress:
+    # DNS resolution
+    - ports:
+        - port: 53
+          protocol: UDP
+        - port: 53
+          protocol: TCP
+    # HTTPS — outbound to AllTrails API
+    # Note: NetworkPolicy cannot filter by hostname. This allows port 443 to
+    # any destination. For hostname-level enforcement, use Cilium CiliumNetworkPolicy
+    # with toFQDNs: [{matchName: "www.alltrails.com"}], or add an egress proxy.
+    - ports:
+        - port: 443
+          protocol: TCP

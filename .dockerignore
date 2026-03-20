@@ -1,0 +1,6 @@
+.git
+.claude
+memory
+*.md
+docker-compose.yml
+k8s/

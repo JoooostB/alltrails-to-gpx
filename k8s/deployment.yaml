@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alltrails-to-gpx
+  labels:
+    app: alltrails-to-gpx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: alltrails-to-gpx
+  template:
+    metadata:
+      labels:
+        app: alltrails-to-gpx
+    spec:
+      containers:
+        - name: alltrails-to-gpx
+          # Pin to a digest in production:
+          # ghcr.io/joooostb/alltrails-to-gpx@sha256:<digest>
+          image: ghcr.io/joooostb/alltrails-to-gpx:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          env:
+            - name: PORT
+              value: "8080"
+            - name: LOG_LEVEL
+              value: "info"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              # 20 cache entries × 10 MB max each = 200 MB + Go runtime overhead
+              memory: "512Mi"
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+            capabilities:
+              drop: ["ALL"]
+      securityContext:
+        runAsNonRoot: true
