@@ -103,7 +103,7 @@ func (c *Client) FetchTrailJSON(ctx context.Context, trailURL string, passthroug
 	if err != nil {
 		return nil, "", err
 	}
-	defer pageBody.Close()
+	defer func() { _ = pageBody.Close() }()
 
 	trailID, err := ExtractTrailID(pageBody, slug)
 	if err != nil {
@@ -116,7 +116,7 @@ func (c *Client) FetchTrailJSON(ctx context.Context, trailURL string, passthroug
 	if err != nil {
 		return nil, "", err
 	}
-	defer apiBody.Close()
+	defer func() { _ = apiBody.Close() }()
 
 	data, err := io.ReadAll(io.LimitReader(apiBody, maxBody))
 	if err != nil {
@@ -177,12 +177,12 @@ func (c *Client) get(ctx context.Context, targetURL, referer string, passthrough
 	c.log.Debug("alltrails response", "url", targetURL, "status", resp.StatusCode)
 
 	if resp.StatusCode == fhttp.StatusNotFound {
-		resp.Body.Close()
+		_ = resp.Body.Close()
 		return nil, ErrTrailNotFound
 	}
 	if resp.StatusCode != fhttp.StatusOK {
 		snippet, _ := io.ReadAll(io.LimitReader(resp.Body, maxErrBodyLog))
-		resp.Body.Close()
+		_ = resp.Body.Close()
 		c.log.Debug("alltrails error response",
 			"url", targetURL,
 			"status", resp.StatusCode,
