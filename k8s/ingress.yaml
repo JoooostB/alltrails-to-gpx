@@ -3,12 +3,13 @@ kind: Ingress
 metadata:
   name: alltrails-to-gpx
   annotations:
-    # Traefik built-in ACME — replace "letsencrypt" with your configured
-    # certificate resolver name if it differs.
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
     traefik.ingress.kubernetes.io/router.tls: "true"
-    traefik.ingress.kubernetes.io/router.tls.certresolver: letsencrypt
 spec:
+  tls:
+    - secretName: alltrailstogpx-app-tls
+      hosts:
+        - alltrailstogpx.app
   rules:
     - host: alltrailstogpx.app
       http:
