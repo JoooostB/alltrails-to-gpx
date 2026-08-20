@@ -24,7 +24,7 @@ FROM rust:1-slim AS rust-builder
 RUN cargo install alltrailsgpx --version 0.2.0 --locked
 
 # ── Stage 3: Build Go binary ───────────────────────────────────────────────────
-FROM golang:1.26-alpine AS go-builder
+FROM golang:1.27-alpine AS go-builder
 
 WORKDIR /app
 
