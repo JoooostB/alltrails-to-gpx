@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"regexp"
 	"strings"
+	"time"
 	"unicode"
 
 	"github.com/joooostb/alltrails-to-gpx/internal/alltrails"
@@ -29,31 +30,45 @@ const maxConcurrent = 5
 
 // Handler holds the dependencies for all HTTP handlers.
 type Handler struct {
-	tmpl      *template.Template
-	client    trailFetcher
-	converter gpxConverter
-	cache     *cache.Cache
-	log       *slog.Logger
-	sem       chan struct{}
+	tmpl        *template.Template
+	client      trailFetcher
+	converter   gpxConverter
+	cache       *cache.Cache
+	log         *slog.Logger
+	sem         chan struct{}
+	convTimeout time.Duration
 }
 
 // New constructs a Handler. tmpl must contain the named templates "layout",
-// "success", and "error".
+// "success", and "error". convTimeout bounds each call to the alltrailsgpx
+// subprocess; a zero or negative value disables the per-conversion deadline.
 func New(
 	tmpl *template.Template,
 	client trailFetcher,
 	conv gpxConverter,
 	c *cache.Cache,
 	log *slog.Logger,
+	convTimeout time.Duration,
 ) *Handler {
 	return &Handler{
-		tmpl:      tmpl,
-		client:    client,
-		converter: conv,
-		cache:     c,
-		log:       log,
-		sem:       make(chan struct{}, maxConcurrent),
+		tmpl:        tmpl,
+		client:      client,
+		converter:   conv,
+		cache:       c,
+		log:         log,
+		sem:         make(chan struct{}, maxConcurrent),
+		convTimeout: convTimeout,
 	}
+}
+
+// convertCtx derives a context that bounds the conversion subprocess to
+// h.convTimeout. When convTimeout is unset (<= 0) the parent context is used
+// unchanged. The returned cancel func must always be called.
+func (h *Handler) convertCtx(parent context.Context) (context.Context, context.CancelFunc) {
+	if h.convTimeout <= 0 {
+		return context.WithCancel(parent)
+	}
+	return context.WithTimeout(parent, h.convTimeout)
 }
 
 // RegisterRoutes attaches all routes to mux.
@@ -109,9 +124,12 @@ func (h *Handler) convert(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	gpx, err := h.converter.Convert(ctx, trailJSON)
+	convCtx, cancel := h.convertCtx(ctx)
+	defer cancel()
+
+	gpx, err := h.converter.Convert(convCtx, trailJSON)
 	if err != nil {
-		if isContextErr(ctx) {
+		if isContextErr(convCtx) {
 			h.renderError(w, "Conversion timed out. Please try again.")
 		} else {
 			h.log.Error("GPX conversion failed", "slug", slug, "err", err)
@@ -152,11 +170,12 @@ func (h *Handler) convertRaw(w http.ResponseWriter, r *http.Request) {
 		slug = "trail"
 	}
 
-	ctx := r.Context()
+	convCtx, cancel := h.convertCtx(r.Context())
+	defer cancel()
 
-	gpx, err := h.converter.Convert(ctx, []byte(rawJSON))
+	gpx, err := h.converter.Convert(convCtx, []byte(rawJSON))
 	if err != nil {
-		if isContextErr(ctx) {
+		if isContextErr(convCtx) {
 			h.renderError(w, "Conversion timed out. Please try again.")
 		} else {
 			h.log.Error("GPX conversion failed (raw)", "slug", slug, "err", err)

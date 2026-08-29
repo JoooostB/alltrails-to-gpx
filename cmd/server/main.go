@@ -64,7 +64,7 @@ func main() {
 	mux := http.NewServeMux()
 	mux.Handle("GET /static/", http.StripPrefix("/static/", http.FileServerFS(staticFS)))
 
-	h := handler.New(tmpl, atClient, conv, gpxCache, log)
+	h := handler.New(tmpl, atClient, conv, gpxCache, log, cfg.ConversionTimeout)
 	h.RegisterRoutes(mux)
 
 	writeTimeout := cfg.HTTPRequestTimeout + cfg.ConversionTimeout + 10*time.Second
