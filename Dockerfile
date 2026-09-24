@@ -1,5 +1,5 @@
 # ── Stage 1: Build CSS and download JS assets ─────────────────────────────────
-FROM node:22-alpine AS asset-builder
+FROM node:24-alpine AS asset-builder
 
 WORKDIR /app
 
