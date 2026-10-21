@@ -4,16 +4,16 @@ go 1.27
 
 require (
 	github.com/bogdanfinn/fhttp v0.7.0
-	github.com/bogdanfinn/tls-client v1.16.0
+	github.com/bogdanfinn/tls-client v1.17.0
 )
 
 require (
 	github.com/andybalholm/brotli v1.2.0 // indirect
 	github.com/bdandy/go-errors v1.2.2 // indirect
 	github.com/bdandy/go-socks4 v1.2.3 // indirect
-	github.com/bogdanfinn/quic-go-utls v1.0.10-utls // indirect
+	github.com/bogdanfinn/quic-go-utls v1.0.11-utls // indirect
 	github.com/bogdanfinn/utls v1.8.2-barnius // indirect
-	github.com/bogdanfinn/websocket v1.5.6-barnius // indirect
+	github.com/bogdanfinn/websocket v1.5.7-barnius // indirect
 	github.com/cloudflare/circl v1.6.2 // indirect
 	github.com/klauspost/compress v1.20.1 // indirect
 	github.com/molecule-man/go-brrr v1.2.0 // indirect
