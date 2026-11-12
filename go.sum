@@ -42,6 +42,8 @@ github.com/bogdanfinn/tls-client v1.17.1 h1:X03STW0lc/Fnt9ihcbrJqoDmM3JBGY9JBTtm
 github.com/bogdanfinn/tls-client v1.17.1/go.mod h1:7eNNENu11RkFyC4QN+voIAbZIdGazRI8lqCA7gW3+0Y=
 github.com/bogdanfinn/tls-client v1.18.0 h1:CNh+8Mq0lU+iAxn3TkxhHQrucIOpPacAl7cio8HVo1c=
 github.com/bogdanfinn/tls-client v1.18.0/go.mod h1:T7hIrZnYRex0YFc/CWkEvxRV28RXUQlROb2b5FgM4BU=
+github.com/bogdanfinn/tls-client v1.18.1 h1:940xCSoipJG13GaGcvOMnF/f+pOCJ+3pKDwemC7Vnt8=
+github.com/bogdanfinn/tls-client v1.18.1/go.mod h1:T7hIrZnYRex0YFc/CWkEvxRV28RXUQlROb2b5FgM4BU=
 github.com/bogdanfinn/utls v1.7.7-barnius h1:OuJ497cc7F3yKNVHRsYPQdGggmk5x6+V5ZlrCR7fOLU=
 github.com/bogdanfinn/utls v1.7.7-barnius/go.mod h1:aAK1VZQlpKZClF1WEQeq6kyclbkPq4hz6xTbB5xSlmg=
 github.com/bogdanfinn/utls v1.7.8-barnius h1:wRT83mP4hmuMM1/lIpLKKhzaEuyEKjux7VSj7XHFXdg=
